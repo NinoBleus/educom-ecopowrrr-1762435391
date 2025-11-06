@@ -1,0 +1,5 @@
+/api-server/vendor/
+/api-server/var/
+/mock-services/node_modules/
+/.idea/
+.idea
