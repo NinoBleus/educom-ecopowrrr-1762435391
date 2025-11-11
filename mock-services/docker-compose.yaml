@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  device_a:
+    build: .
+    environment:
+      POSTCODE: "1011AB"
+      HUISNR: "12"
+      DEVICE_TYPE: "solar"
+      SERIALS: "SOL-001,SOL-002"
+    ports: ["3001:3000"]
+  device_b:
+    build: .
+    environment:
+      POSTCODE: "3512JK"
+      HUISNR: "8"
+      DEVICE_TYPE: "pump"
+      SERIALS: "PMP-100"
+    ports: ["3002:3000"]
