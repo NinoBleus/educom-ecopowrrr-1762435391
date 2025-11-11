@@ -1,0 +1,102 @@
+[
+  {
+    "device_id": "dev-ams-001",
+    "household_name": "Familie Janssen",
+    "postcode": "1011AB",
+    "house_number": "12",
+    "municipality": "Amsterdam",
+    "geo": { "lat": 52.37276, "lon": 4.91222 },
+    "tariffs": {
+      "sell_eur_per_kwh": 0.23,
+      "buy_eur_per_kwh": 0.09
+    },
+    "devices": [
+      {
+        "serial_number": "SOL-AMS-001",
+        "device_type": "solar",
+        "role": "producer",
+        "peak_kw": 5.4
+      },
+      {
+        "serial_number": "SOL-AMS-002",
+        "device_type": "solar",
+        "role": "producer",
+        "peak_kw": 3.2
+      },
+      {
+        "serial_number": "PMP-AMS-001",
+        "device_type": "pump",
+        "role": "consumer",
+        "baseline_kw": 0.65,
+        "swing_kw": 0.15
+      }
+    ]
+  },
+  {
+    "device_id": "dev-ut-002",
+    "household_name": "Familie de Vries",
+    "postcode": "3512JE",
+    "house_number": "44",
+    "municipality": "Utrecht",
+    "geo": { "lat": 52.09288, "lon": 5.1201 },
+    "tariffs": {
+      "sell_eur_per_kwh": 0.25,
+      "buy_eur_per_kwh": 0.08
+    },
+    "devices": [
+      {
+        "serial_number": "SOL-UTR-010",
+        "device_type": "solar",
+        "role": "producer",
+        "peak_kw": 7.1
+      },
+      {
+        "serial_number": "BAT-UTR-010",
+        "device_type": "battery",
+        "role": "producer",
+        "capacity_kwh": 13.5,
+        "max_discharge_kw": 2.0
+      },
+      {
+        "serial_number": "EV-UTR-010",
+        "device_type": "ev_charger",
+        "role": "consumer",
+        "baseline_kw": 0.4,
+        "swing_kw": 1.6
+      }
+    ]
+  },
+  {
+    "device_id": "dev-grn-003",
+    "household_name": "Familie Bos",
+    "postcode": "9711NN",
+    "house_number": "3",
+    "municipality": "Groningen",
+    "geo": { "lat": 53.21843, "lon": 6.5665 },
+    "tariffs": {
+      "sell_eur_per_kwh": 0.21,
+      "buy_eur_per_kwh": 0.11
+    },
+    "devices": [
+      {
+        "serial_number": "WND-GRN-201",
+        "device_type": "wind",
+        "role": "producer",
+        "peak_kw": 2.4
+      },
+      {
+        "serial_number": "SOL-GRN-201",
+        "device_type": "solar",
+        "role": "producer",
+        "peak_kw": 4.0
+      },
+      {
+        "serial_number": "PMP-GRN-201",
+        "device_type": "pump",
+        "role": "consumer",
+        "baseline_kw": 0.55,
+        "swing_kw": 0.2
+      }
+    ]
+  }
+]
