@@ -16,28 +16,61 @@ class DeviceReadingRepository extends ServiceEntityRepository
         parent::__construct($registry, DeviceReading::class);
     }
 
-    //    /**
-    //     * @return DeviceReading[] Returns an array of DeviceReading objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function saveDeviceReading(array $params): ?DeviceReading
+    {
+        $deviceReading = null;
 
-    //    public function findOneBySomeField($value): ?DeviceReading
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($params['id'])) {
+            $deviceReading = $this->find($params['id']);
+
+            if ($deviceReading === null) {
+                return null; // service layer can detect not found
+            }
+        }
+
+        if ($deviceReading === null) {
+            $deviceReading = new DeviceReading();
+        }
+
+        if (array_key_exists('readingTimestamp', $params)) {
+            $deviceReading->setReadingTimestamp($params['readingTimestamp']);
+        }
+
+        if (array_key_exists('kwhGenerated', $params)) {
+            $deviceReading->setKwhGenerated($params['kwhGenerated']);
+        }
+
+        //check in service if device_id is a valid option
+        if (array_key_exists('device_id', $params)) {
+            $deviceReading->setDeviceId($params['device_id']);
+        }
+
+        //check in service if price_period_id is a valid option
+        if (array_key_exists('pricePeriodId', $params)) {
+            $deviceReading->setPricePeriodId($params['pricePeriodId']);
+        }
+        
+        
+
+        $this->getEntityManager()->persist($deviceReading);
+        $this->getEntityManager()->flush();
+
+        return $deviceReading;
+    }
+    
+    public function readDeviceReading($deviceReadingId) {
+        return($this->find($deviceReadingId));       
+    }
+
+    public function deleteDeviceReading($id) {
+
+    $deviceReading = $this->find($id);
+    if($deviceReading) {
+        $this->getEntityManager()->remove($deviceReading);
+        $this->getEntityManager()->flush();
+        return(true);
+    }
+
+    return(false);
+    }
 }

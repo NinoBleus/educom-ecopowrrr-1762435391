@@ -16,28 +16,77 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    //    /**
-    //     * @return Customer[] Returns an array of Customer objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function saveCustomer(array $params): ?Customer
+    {
+        $customer = null;
 
-    //    public function findOneBySomeField($value): ?Customer
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($params['id'])) {
+            $customer = $this->find($params['id']);
+
+            if ($customer === null) {
+                return null; // service layer can detect not found
+            }
+        }
+
+        if ($customer === null) {
+            $customer = new Customer();
+        }
+
+        if (array_key_exists('firstName', $params)) {
+            $customer->setFirstName($params['firstName']);
+        }
+
+        if (array_key_exists('lastName', $params)) {
+            $customer->setLastName($params['lastname']);
+        }
+
+        if (array_key_exists('iban', $params)) {
+            $customer->setIban($params['iban'] ?: null);
+        }
+
+        if (array_key_exists('postCode', $params)) {
+            $customer->setPostcode($params['postCode'] ?: null);
+        }
+
+        if (array_key_exists('houseNumber', $params)) {
+            $customer->setHouseNumber($params['houseNumber'] ?: null);
+        }
+
+        if (array_key_exists('street', $params)) {
+            $customer->setStreet($params['street'] ?: null);
+        }
+
+        if (array_key_exists('city', $params)) {
+            $customer->setCity($params['city'] ?: null);
+        }
+
+        if (array_key_exists('latitude', $params)) {
+            $customer->setLatitude($params['latitude'] ?: null);
+        }
+
+        if (array_key_exists('longitude', $params)) {
+            $customer->setLongitude($params['longitude'] ?: null);
+        }
+
+        $this->getEntityManager()->persist($customer);
+        $this->getEntityManager()->flush();
+
+        return $customer;
+    }
+    
+    public function readCustomer($customerId) {
+        return($this->find($customerId));       
+    }
+
+    public function deleteCustomer($id) {
+
+    $customer = $this->find($id);
+    if($customer) {
+        $this->getEntityManager()->remove($customer);
+        $this->getEntityManager()->flush();
+        return(true);
+    }
+
+    return(false);
+    }
 }

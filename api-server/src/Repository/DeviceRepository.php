@@ -16,28 +16,53 @@ class DeviceRepository extends ServiceEntityRepository
         parent::__construct($registry, Device::class);
     }
 
-    //    /**
-    //     * @return Device[] Returns an array of Device objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function saveDevice(array $params): ?Device
+    {
+        $device = null;
 
-    //    public function findOneBySomeField($value): ?Device
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($params['id'])) {
+            $device = $this->find($params['id']);
+
+            if ($device === null) {
+                return null; // service layer can detect not found
+            }
+        }
+
+        if ($device === null) {
+            $device = new Device();
+        }
+
+        if (array_key_exists('customer_id', $params)) {
+            $device->setCustomerId($params['customer_id']);
+        }
+
+        if (array_key_exists('deviceType', $params)) {
+            $device->setDeviceType($params['deviceType']);
+        }
+
+        if (array_key_exists('serialNumber', $params)) {
+            $device->setSerialNumber($params['serialNumber']);
+        }
+
+        $this->getEntityManager()->persist($device);
+        $this->getEntityManager()->flush();
+
+        return $device;
+    }
+    
+    public function readDeviceReading($deviceId) {
+        return($this->find($deviceId));       
+    }
+
+    public function deleteDeviceReading($id) {
+
+    $device = $this->find($id);
+    if($device) {
+        $this->getEntityManager()->remove($device);
+        $this->getEntityManager()->flush();
+        return(true);
+    }
+
+    return(false);
+    }
 }
