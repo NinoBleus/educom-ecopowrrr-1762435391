@@ -15,17 +15,19 @@ class DeviceReading
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'uuid')]
-    private ?Uuid $device_id = null;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $reading_timestamp = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4)]
     private ?string $kwh_generated = null;
 
-    #[ORM\Column(type: Types::BIGINT)]
-    private ?string $price_period_id = null;
+    #[ORM\ManyToOne(inversedBy: 'deviceReadings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?device $device_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'deviceReadings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?buypriceperiod $price_period_id = null;
 
     public function getId(): ?int
     {
@@ -35,18 +37,6 @@ class DeviceReading
     public function setId(string $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    public function getDeviceId(): ?Uuid
-    {
-        return $this->device_id;
-    }
-
-    public function setDeviceId(Uuid $device_id): static
-    {
-        $this->device_id = $device_id;
 
         return $this;
     }
@@ -75,12 +65,24 @@ class DeviceReading
         return $this;
     }
 
-    public function getPricePeriodId(): ?string
+    public function getDeviceId(): ?device
+    {
+        return $this->device_id;
+    }
+
+    public function setDeviceId(?device $device_id): static
+    {
+        $this->device_id = $device_id;
+
+        return $this;
+    }
+
+    public function getPricePeriodId(): ?buypriceperiod
     {
         return $this->price_period_id;
     }
 
-    public function setPricePeriodId(string $price_period_id): static
+    public function setPricePeriodId(?buypriceperiod $price_period_id): static
     {
         $this->price_period_id = $price_period_id;
 

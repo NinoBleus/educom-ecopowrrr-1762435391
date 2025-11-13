@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CustomerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,17 @@ class Customer
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4)]
     private ?string $longitude = null;
+
+    /**
+     * @var Collection<int, Device>
+     */
+    #[ORM\OneToMany(targetEntity: Device::class, mappedBy: 'customer_id')]
+    private Collection $devices;
+
+    public function __construct()
+    {
+        $this->devices = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -157,6 +170,36 @@ class Customer
     public function setLongitude(string $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Device>
+     */
+    public function getDevices(): Collection
+    {
+        return $this->devices;
+    }
+
+    public function addDevice(Device $device): static
+    {
+        if (!$this->devices->contains($device)) {
+            $this->devices->add($device);
+            $device->setCustomerId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDevice(Device $device): static
+    {
+        if ($this->devices->removeElement($device)) {
+            // set the owning side to null (unless already changed)
+            if ($device->getCustomerId() === $this) {
+                $device->setCustomerId(null);
+            }
+        }
 
         return $this;
     }

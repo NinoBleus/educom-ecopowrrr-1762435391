@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BuyPricePeriodRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,17 @@ class BuyPricePeriod
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $price_per_kwh = null;
+
+    /**
+     * @var Collection<int, DeviceReading>
+     */
+    #[ORM\OneToMany(targetEntity: DeviceReading::class, mappedBy: 'price_period_id', orphanRemoval: true)]
+    private Collection $deviceReadings;
+
+    public function __construct()
+    {
+        $this->deviceReadings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -67,6 +80,36 @@ class BuyPricePeriod
     public function setPricePerKwh(string $price_per_kwh): static
     {
         $this->price_per_kwh = $price_per_kwh;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DeviceReading>
+     */
+    public function getDeviceReadings(): Collection
+    {
+        return $this->deviceReadings;
+    }
+
+    public function addDeviceReading(DeviceReading $deviceReading): static
+    {
+        if (!$this->deviceReadings->contains($deviceReading)) {
+            $this->deviceReadings->add($deviceReading);
+            $deviceReading->setPricePeriodId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDeviceReading(DeviceReading $deviceReading): static
+    {
+        if ($this->deviceReadings->removeElement($deviceReading)) {
+            // set the owning side to null (unless already changed)
+            if ($deviceReading->getPricePeriodId() === $this) {
+                $deviceReading->setPricePeriodId(null);
+            }
+        }
 
         return $this;
     }
