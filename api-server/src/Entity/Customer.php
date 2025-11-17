@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
 #[ORM\Table(uniqueConstraints: [
@@ -18,39 +20,50 @@ class Customer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['customer:read', 'device:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $first_name = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $last_name = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $iban = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $postcode = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $house_number = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $street = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['customer:read'])]
     private ?string $city = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4, nullable: true)]
+    #[Groups(['customer:read'])]
     private ?string $latitude = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 4, nullable: true)]
+    #[Groups(['customer:read'])]
     private ?string $longitude = null;
 
     /**
      * @var Collection<int, Device>
      */
     #[ORM\OneToMany(targetEntity: Device::class, mappedBy: 'customer_id')]
+    #[Ignore]
     private Collection $devices;
 
     public function __construct()
@@ -159,7 +172,7 @@ class Customer
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): static
+    public function setLatitude(?string $latitude): static
     {
         $this->latitude = $latitude;
 
@@ -171,7 +184,7 @@ class Customer
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): static
+    public function setLongitude(?string $longitude): static
     {
         $this->longitude = $longitude;
 

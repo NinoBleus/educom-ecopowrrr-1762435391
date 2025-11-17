@@ -5,32 +5,40 @@ namespace App\Entity;
 use App\Repository\DeviceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
+#[ORM\Table(uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'UNIQ_DEVICE_SERIAL_CUSTOMER', columns: ['serial_number', 'customer_id'])
+])]
 class Device
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?Uuid $id = null;
+    #[ORM\GeneratedValue]
+    #[Groups(['device:read', 'customer:read'])]
+    private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['device:read', 'customer:read'])]
     private ?string $device_type = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['device:read'])]
     private ?string $serial_number = null;
 
     #[ORM\ManyToOne(inversedBy: 'devices')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?customer $customer_id = null;
+    #[ORM\JoinColumn(name: 'customer_id', nullable: false)]
+    #[Groups(['device:read'])]
+    private ?Customer $customer_id = null;
 
     /**
      * @var Collection<int, DeviceReading>
      */
     #[ORM\OneToMany(targetEntity: DeviceReading::class, mappedBy: 'device_id', orphanRemoval: true)]
+    #[Ignore]
     private Collection $deviceReadings;
 
     public function __construct()
@@ -43,7 +51,7 @@ class Device
         return $this->id;
     }
 
-    public function setId(Uuid $id): static
+    public function setId(int $id): static
     {
         $this->id = $id;
 
@@ -74,12 +82,12 @@ class Device
         return $this;
     }
 
-    public function getCustomerId(): ?customer
+    public function getCustomerId(): ?Customer
     {
         return $this->customer_id;
     }
 
-    public function setCustomerId(?customer $customer_id): static
+    public function setCustomerId(?Customer $customer_id): static
     {
         $this->customer_id = $customer_id;
 

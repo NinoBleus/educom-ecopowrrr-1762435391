@@ -1,9 +1,10 @@
 <?php
 namespace App\Infrastructure;
 
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Infrastructure\Exception\AddressLookupException;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AddressLookupClient
 {
@@ -40,9 +41,26 @@ class AddressLookupClient
                 'timeout' => 5,
             ]);
         } catch (TransportExceptionInterface $e) {
-            throw new \RuntimeException('Address lookup unavailable', 0, $e);
+            throw new AddressLookupException('Address lookup unavailable', 0, $e);
         }
 
-        return $response->toArray(false);
+        try {
+            $payload = $response->toArray(false);
+        } catch (DecodingExceptionInterface $e) {
+            throw new AddressLookupException('Address lookup returned invalid response', 0, $e);
+        }
+
+        $status = $response->getStatusCode();
+
+        if ($status === 404) {
+            throw new AddressLookupException('Unknown postcode/house number combination', 404);
+        }
+
+        if ($status >= 400) {
+            $message = $payload['message'] ?? $payload['error'] ?? 'Postcode service rejected the request';
+            throw new AddressLookupException(sprintf('Postcode lookup failed (%d): %s', $status, $message), $status);
+        }
+
+        return $payload;
     }
 }

@@ -4,7 +4,9 @@ namespace App\Service;
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use App\Infrastructure\AddressLookupClient;
+use App\Infrastructure\Exception\AddressLookupException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 
 class CustomerService
@@ -37,8 +39,18 @@ class CustomerService
        
         try {
             $address = $this->addresses->fetchFull($postcode, $houseNumber);
-        } catch (\RuntimeException $exception) {
-            throw new BadRequestHttpException($exception->getMessage(), $exception);
+        } catch (AddressLookupException $exception) {
+            $status = $exception->getStatusCode();
+
+            if ($status === 404) {
+                throw new BadRequestHttpException('Unknown postcode/house number combination', $exception);
+            }
+
+            if ($status && $status < 500) {
+                throw new BadRequestHttpException($exception->getMessage(), $exception);
+            }
+
+            throw new ServiceUnavailableHttpException(null, 'Postcode lookup unavailable, try again later', $exception);
         }
 
         $result = $this->customerRepository->saveCustomer([
