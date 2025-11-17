@@ -6,9 +6,7 @@ use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Customer>
- */
+
 class CustomerRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -74,7 +72,7 @@ class CustomerRepository extends ServiceEntityRepository
         return $customer;
     }
     
-    public function readCustomer($customerId) {
+    public function fetchCustomer($customerId) {
         return($this->find($customerId));       
     }
 

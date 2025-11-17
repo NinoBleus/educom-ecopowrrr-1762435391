@@ -18,3 +18,12 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # api-server/config/services.yaml
+    App\Infrastructure\AddressLookupClient:
+        arguments:
+            $httpClient: '@http_client'
+            $apiKey: '%env(POSTCODE_API_KEY)%'
+            $shortUrl: '%env(POSTCODE_URL_SHORT)%'
+            $fullUrl: '%env(POSTCODE_URL_LONG)%'
+

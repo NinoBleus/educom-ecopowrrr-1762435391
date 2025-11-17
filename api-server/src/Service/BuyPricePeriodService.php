@@ -9,5 +9,7 @@ class BuyPricePeriodService
         private readonly BuyPricePeriodRepository $buyPricePeriodRepository,
     ) {}
 
-    
+    public function saveBuyPricePeriod($params) {
+        $result = $this->buyPricePeriodRepository->saveBuyPricePeriod($params);
+    }
 }

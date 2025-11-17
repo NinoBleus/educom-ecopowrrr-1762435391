@@ -6,9 +6,6 @@ use App\Entity\Device;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Device>
- */
 class DeviceRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -24,7 +21,7 @@ class DeviceRepository extends ServiceEntityRepository
             $device = $this->find($params['id']);
 
             if ($device === null) {
-                return null; // service layer can detect not found
+                return null;
             }
         }
 
@@ -50,8 +47,12 @@ class DeviceRepository extends ServiceEntityRepository
         return $device;
     }
     
-    public function readDeviceReading($deviceId) {
+    public function fetchDeviceById($deviceId) {
         return($this->find($deviceId));       
+    }
+
+    public function fetchDevicesFromCustomer(Customer $customer) {
+        return($this->findBy(['customer_id' => $customer]));
     }
 
     public function deleteDeviceReading($id) {
