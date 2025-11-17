@@ -9,6 +9,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CustomerRepository::class)]
+#[ORM\Table(uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'UNIQ_CUSTOMER_IBAN', columns: ['iban']),
+    new ORM\UniqueConstraint(name: 'UNIQ_CUSTOMER_ADDRESS', columns: ['postcode', 'house_number']),
+])]
 class Customer
 {
     #[ORM\Id]

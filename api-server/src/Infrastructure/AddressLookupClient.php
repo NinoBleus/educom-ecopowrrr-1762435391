@@ -43,10 +43,6 @@ class AddressLookupClient
             throw new \RuntimeException('Address lookup unavailable', 0, $e);
         }
 
-        try {
-            return $response->toArray();
-        } catch (ClientExceptionInterface $e) {
-            throw new \RuntimeException('Address lookup failed: '.$e->getMessage(), 0, $e);
-        }
+        return $response->toArray(false);
     }
 }

@@ -35,15 +35,15 @@ class CustomerRepository extends ServiceEntityRepository
         }
 
         if (array_key_exists('lastName', $params)) {
-            $customer->setLastName($params['lastname']);
+            $customer->setLastName($params['lastName']);
         }
 
         if (array_key_exists('iban', $params)) {
             $customer->setIban($params['iban'] ?: null);
         }
 
-        if (array_key_exists('postCode', $params)) {
-            $customer->setPostcode($params['postCode'] ?: null);
+        if (array_key_exists('postcode', $params)) {
+            $customer->setPostcode($params['postcode'] ?: null);
         }
 
         if (array_key_exists('houseNumber', $params)) {
