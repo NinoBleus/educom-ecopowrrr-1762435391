@@ -65,4 +65,16 @@ class BuyPricePeriodRepository extends ServiceEntityRepository
 
     return(false);
     }
+
+    public function findLatestPeriodBefore(\DateTimeInterface $timestamp): ?BuyPricePeriod
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.valid_from <= :ts')
+            ->orderBy('p.valid_from', 'DESC')
+            ->setParameter('ts', $timestamp)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }

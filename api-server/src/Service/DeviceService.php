@@ -49,5 +49,9 @@ class DeviceService
         return $this->customerRepository->fetchCustomer($id);
     }
 
+    public function findDeviceBySerial($serial) {
+        return $this->deviceRepository->fetchDeviceBySerial($serial);
+    }
+
     
 }

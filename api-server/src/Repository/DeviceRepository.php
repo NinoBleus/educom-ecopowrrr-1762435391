@@ -52,6 +52,10 @@ class DeviceRepository extends ServiceEntityRepository
         return($this->find($deviceId));       
     }
 
+    public function fetchDeviceBySerial($serial) {
+        return($this->findOneBy(['serial_number' => $serial]));
+    }
+
     public function fetchDevicesFromCustomer(Customer $customer) {
         return($this->findBy(['customer_id' => $customer]));
     }

@@ -23,22 +23,15 @@ class DeviceReading
 
     #[ORM\ManyToOne(inversedBy: 'deviceReadings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Device $device_id = null;
+    private ?Device $device = null;
 
     #[ORM\ManyToOne(inversedBy: 'deviceReadings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?BuyPricePeriod $price_period_id = null;
+    private ?BuyPricePeriod $price_period = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(string $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getReadingTimestamp(): ?\DateTimeImmutable
@@ -67,24 +60,24 @@ class DeviceReading
 
     public function getDeviceId(): ?Device
     {
-        return $this->device_id;
+        return $this->device;
     }
 
-    public function setDeviceId(?Device $device_id): static
+    public function setDeviceId(?Device $device): static
     {
-        $this->device_id = $device_id;
+        $this->device = $device;
 
         return $this;
     }
 
     public function getPricePeriodId(): ?BuyPricePeriod
     {
-        return $this->price_period_id;
+        return $this->price_period;
     }
 
-    public function setPricePeriodId(?BuyPricePeriod $price_period_id): static
+    public function setPricePeriodId(?BuyPricePeriod $price_period): static
     {
-        $this->price_period_id = $price_period_id;
+        $this->price_period = $price_period;
 
         return $this;
     }

@@ -26,4 +26,8 @@ services:
             $apiKey: '%env(POSTCODE_API_KEY)%'
             $shortUrl: '%env(POSTCODE_URL_SHORT)%'
             $fullUrl: '%env(POSTCODE_URL_LONG)%'
+    App\Infrastructure\DeviceTelemetryClient:
+        arguments:
+            $httpClient: '@http_client'
+            $baseUrl: '%env(MOCK_DEVICE_BASE_URL)%'
 
