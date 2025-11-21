@@ -61,6 +61,8 @@ class CustomerService
             'houseNumber' => $address['number'] ?? $houseNumber,
             'street'      => $address['street'] ?? null,
             'city'        => $address['city'] ?? $address['municipality'] ?? null,
+            'municipality'=> $address['municipality'] ?? null,
+            'province'    => $address['province'] ?? null,
             'latitude'    => $address['geo']['lat'] ?? null,
             'longitude'   => $address['geo']['lon'] ?? null,
         ]);

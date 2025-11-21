@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\DeviceReading;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -58,6 +59,14 @@ class CustomerRepository extends ServiceEntityRepository
             $customer->setCity($params['city'] ?: null);
         }
 
+        if (array_key_exists('municipality', $params)) {
+            $customer->setMunicipality($params['municipality'] ?: null);
+        }
+
+        if (array_key_exists('province', $params)) {
+            $customer->setProvince($params['province'] ?: null);
+        }
+
         if (array_key_exists('latitude', $params)) {
             $customer->setLatitude($params['latitude'] ?: null);
         }
@@ -76,7 +85,8 @@ class CustomerRepository extends ServiceEntityRepository
         return($this->find($customerId));       
     }
 
-    public function deleteCustomer($id) {
+    public function deleteCustomer($id) 
+    {
 
     $customer = $this->find($id);
     if($customer) {
@@ -86,5 +96,34 @@ class CustomerRepository extends ServiceEntityRepository
     }
 
     return(false);
+    }
+
+    /**
+     * @return DeviceReading[]
+     */
+    public function fetchCustomerAnualDeviceReadingData(?int $customerId = null, int $year): array
+    {
+        $startOfYear = new \DateTimeImmutable(sprintf('%04d-01-01 00:00:00', $year));
+        $startOfNextYear = $startOfYear->modify('+1 year');
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder()
+            ->select('deviceReading')
+            ->from(DeviceReading::class, 'deviceReading')
+            ->innerJoin('deviceReading.device', 'device')
+            ->innerJoin('device.customer_id', 'customer');
+
+        if ($customerId !== null) {
+            $queryBuilder
+                ->andWhere('customer.id = :customerId')
+                ->setParameter('customerId', $customerId);
+        }
+
+        return $queryBuilder
+            ->andWhere('deviceReading.reading_timestamp >= :startOfYear')
+            ->andWhere('deviceReading.reading_timestamp < :startOfNextYear')
+            ->setParameter('startOfYear', $startOfYear)
+            ->setParameter('startOfNextYear', $startOfNextYear)
+            ->getQuery()
+            ->getResult();
     }
 }

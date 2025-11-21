@@ -66,6 +66,12 @@ class Customer
     #[Ignore]
     private Collection $devices;
 
+    #[ORM\Column(length: 255)]
+    private ?string $municipality = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $province = null;
+
     public function __construct()
     {
         $this->devices = new ArrayCollection();
@@ -217,6 +223,30 @@ class Customer
                 $device->setCustomerId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMunicipality(): ?string
+    {
+        return $this->municipality;
+    }
+
+    public function setMunicipality(string $municipality): static
+    {
+        $this->municipality = $municipality;
+
+        return $this;
+    }
+
+    public function getProvince(): ?string
+    {
+        return $this->province;
+    }
+
+    public function setProvince(string $province): static
+    {
+        $this->province = $province;
 
         return $this;
     }

@@ -31,12 +31,29 @@ class DeviceReadingService
                 continue;
             }
 
-            $this->deviceReadingRepository->saveDeviceReading([
+            $deviceType = $entry['device_type'] ?? 'unknown';
+            $rawYield = $entry['device_month_yield'] ?? null;
+            $kwhGenerated = $rawYield !== null ? (float) $rawYield : 0.0;
+            $kwhUsed = null;
+
+            if ($deviceType === 'smart_meter') {
+                $rawUsage = $entry['device_month_usage'] ?? null;
+                $kwhUsed = $rawUsage !== null ? number_format((float) $rawUsage, 2, '.', '') : null;
+                $kwhGenerated = 0.0;
+            }
+
+            $payloadForDevice = [
                 'readingTimestamp'  => $timestamp,
-                'kwhGenerated'      => $entry['device_month_yield'],
+                'kwhGenerated'      => number_format($kwhGenerated, 4, '.', ''),
                 'device_id'         => $device,
                 'pricePeriodId'     => $pricePeriod,
-            ]);
+            ];
+
+            if ($kwhUsed !== null) {
+                $payloadForDevice['kwhUsed'] = $kwhUsed;
+            }
+
+            $this->deviceReadingRepository->saveDeviceReading($payloadForDevice);
         }
 
     }

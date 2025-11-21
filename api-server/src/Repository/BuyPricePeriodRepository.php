@@ -45,7 +45,7 @@ class BuyPricePeriodRepository extends ServiceEntityRepository
         }
 
         $this->getEntityManager()->persist($buyPricePeriod);
-        $this->getEntityManager->flush();
+        $this->getEntityManager()->flush();
 
         return $buyPricePeriod;
     }
@@ -70,8 +70,18 @@ class BuyPricePeriodRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.valid_from <= :ts')
+            ->andWhere('p.valid_to IS NULL OR p.valid_to > :ts')
             ->orderBy('p.valid_from', 'DESC')
             ->setParameter('ts', $timestamp)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findEarliestPeriod(): ?BuyPricePeriod
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.valid_from', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

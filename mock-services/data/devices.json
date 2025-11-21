@@ -1,13 +1,11 @@
 {
   "message_id": "msg-2025-11-18-001",
   "date": "2025-11-18T10:32:45+01:00",
-  "total_usage": "142.7",
   "devices": [
     { 
       "device_id": "1",
       "serial_number": "SOLAR-INV-2023-0001",
       "device_type": "solar",
-      "device_status": "active",
       "device_total_yield": "3568.4",
       "device_month_yield": "212.9"
     },
@@ -15,7 +13,6 @@
       "device_id": "2",
       "serial_number": "HEATPUMP-HP-19K-7742",
       "device_type": "pump",
-      "device_status": "active",
       "device_total_yield": "1984.3",
       "device_month_yield": "95.6"
     },
@@ -23,9 +20,15 @@
       "device_id": "3",
       "serial_number": "EVCHARGER-WB-11KW-0921",
       "device_type": "ev_charger",
-      "device_status": "inactive",
       "device_total_yield": "1240.9",
       "device_month_yield": "18.3"
+    },
+    {
+      "device_id": "4",
+      "serial_number": "SMARTMETER-WK-11OL-0987",
+      "device_type": "smart_meter",
+      "device_total_usage": "1240.9",
+      "device_month_usage": "18.3"
     }
   ]
 }

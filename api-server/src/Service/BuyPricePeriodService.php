@@ -14,19 +14,27 @@ class BuyPricePeriodService
         $result = $this->buyPricePeriodRepository->saveBuyPricePeriod($params);
     }
 
-    public function getPeriodFor(\DateTimeInterface $timestamp): ?BuyPricePeriod
+    public function getPeriodFor(\DateTimeInterface $timestamp): BuyPricePeriod
     {
         $period = $this->buyPricePeriodRepository->findLatestPeriodBefore($timestamp);
-        if (!$period) {
-            return null;
+        if ($period) {
+            return $period;
         }
 
-        $validTo = $period->getValidTo();
-        if ($validTo !== null && $timestamp >= $validTo) {
-            return null;
+        $earliest = $this->buyPricePeriodRepository->findEarliestPeriod();
+        if ($earliest === null) {
+            throw new \RuntimeException('No buy price periods have been configured yet.');
         }
 
-        return $period;
+        $validFrom = $earliest->getValidFrom();
+        if ($validFrom === null || $timestamp < $validFrom) {
+            return $earliest;
+        }
+
+        throw new \RuntimeException(sprintf(
+            'No buy price period covers %s. Please add a price period that starts on or before this date.',
+            $timestamp->format(\DateTimeInterface::ATOM)
+        ));
     }
 
 

@@ -4,3 +4,5 @@ services:
     build: .
     ports:
       - "3000:3000"
+    environment:
+      SIMULATION_START_DATE: "2019-01-01"

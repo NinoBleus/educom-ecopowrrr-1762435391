@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\DeviceReadingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: DeviceReadingRepository::class)]
 class DeviceReading
@@ -28,6 +27,9 @@ class DeviceReading
     #[ORM\ManyToOne(inversedBy: 'deviceReadings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?BuyPricePeriod $price_period = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $kwh_used = null;
 
     public function getId(): ?int
     {
@@ -78,6 +80,18 @@ class DeviceReading
     public function setPricePeriodId(?BuyPricePeriod $price_period): static
     {
         $this->price_period = $price_period;
+
+        return $this;
+    }
+
+    public function getKwhUsed(): ?string
+    {
+        return $this->kwh_used;
+    }
+
+    public function setKwhUsed(?string $kwh_used): static
+    {
+        $this->kwh_used = $kwh_used;
 
         return $this;
     }
