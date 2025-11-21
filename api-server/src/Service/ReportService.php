@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use App\Repository\CustomerRepository;
 use App\Repository\DeviceReadingRepository;
 use App\Entity\Customer;
@@ -72,6 +73,8 @@ class ReportService
             sprintf('=SUM(E2:E%d)', $excelRow - 1)
         );
 
+        $this->autoSizeColumns($worksheet, ['A', 'B', 'C', 'D', 'E']);
+
         return $spreadsheet;
     }
 
@@ -133,6 +136,8 @@ class ReportService
         $worksheet->setCellValue('G4', 'Verwachting verschil (€)');
         $worksheet->setCellValue('H4', sprintf('=D%d', $excelRow));
 
+        $this->autoSizeColumns($worksheet, ['A', 'B', 'C', 'D', 'E', 'G', 'H']);
+
         return $spreadsheet;
     }
 
@@ -174,6 +179,8 @@ class ReportService
         $worksheet->setCellValue("D{$excelRow}", sprintf('=SUM(D2:D%d)', $excelRow - 1));
         $worksheet->setCellValue("E{$excelRow}", sprintf('=SUM(E2:E%d)', $excelRow - 1));
         $worksheet->setCellValue("F{$excelRow}", sprintf('=SUM(F2:F%d)', $excelRow - 1));
+
+        $this->autoSizeColumns($worksheet, ['A', 'B', 'C', 'D', 'E', 'F']);
 
         return $spreadsheet;
     }
@@ -340,5 +347,12 @@ class ReportService
         $fullName = trim(sprintf('%s %s', $customer->getFirstName() ?? '', $customer->getLastName() ?? ''));
 
         return $fullName !== '' ? $fullName : sprintf('Customer %d', $customer->getId());
+    }
+
+    private function autoSizeColumns(Worksheet $worksheet, array $columns): void
+    {
+        foreach ($columns as $column) {
+            $worksheet->getColumnDimension($column)->setAutoSize(true);
+        }
     }
 }
