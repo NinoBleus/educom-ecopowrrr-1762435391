@@ -80,12 +80,10 @@ app.get("/telemetry", (req, res) => {
     const minutes = Math.max(1, Math.floor((now - since) / 60000));
     advanceDevice(ctx, minutes, now);
   }
-  const usageSinceLastFetch = ctx.cycle_usage ?? 0;
 
   res.json({
     message_id: crypto.randomBytes(8).toString("hex"),
     date: now.toISOString(),
-    total_usage: usageSinceLastFetch.toFixed(3),
     devices: ctx.devices.map(device => {
       const base = {
         device_id: device.device_id,
@@ -97,7 +95,6 @@ app.get("/telemetry", (req, res) => {
       if (device.device_type === "smart_meter") {
         return {
           ...base,
-          device_total_usage: device.device_total_usage.toFixed(3),
           device_month_usage: device.device_month_usage.toFixed(3)
         };
       }
